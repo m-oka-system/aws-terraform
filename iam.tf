@@ -1,4 +1,9 @@
 ################################
+# AccountID
+################################
+data "aws_caller_identity" "self" {}
+
+################################
 # IAMポリシー
 ################################
 data "aws_iam_policy_document" "ec2_run_userdata" {
