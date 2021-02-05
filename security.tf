@@ -51,3 +51,42 @@ module "ssh" {
   port        = 22
   cidr_blocks = [local.allowed-cidr]
 }
+
+################################
+# KMS
+################################
+resource "aws_kms_key" "customer_key" {
+  description             = "Customer Master Key"
+  enable_key_rotation     = true
+  is_enabled              = true
+  deletion_window_in_days = 7
+}
+
+resource "aws_kms_alias" "customer_key_alias" {
+  name          = "alias/customer_master_key"
+  target_key_id = aws_kms_key.customer_key.id
+}
+
+################################
+# SSM
+################################
+//resource "aws_ssm_parameter" "ecs_db_hostname" {
+//  name        = "ecs_db_hostname"
+//  type        = "String"
+//  value       = "${var.db_identifier}.cekjx3vyluhs.ap-northeast-1.rds.amazonaws.com"
+//  description = "データベースのホスト名"
+//}
+//
+//resource "aws_ssm_parameter" "ecs_db_password" {
+//  name        = "ecs_db_password"
+//  type        = "SecureString"
+//  value       = "uninitialized"
+//  description = "データベースのパスワード"
+//
+//  lifecycle {
+//    ignore_changes = [value]
+//  }
+//}
+
+# Overwrite password with aws cli
+# aws ssm put-parameter --name "ecs_db_password" --type SecureString --value "My5up3rStr0ngPaSw0rd!" --overwrite
